@@ -1,0 +1,99 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sess",
+  "version": "0.1.1",
+  "description": "Let your agent ask a person and continue with their answer.",
+  "author": {
+    "name": "Sess",
+    "url": "https://sess.si"
+  },
+  "homepage": "https://sess.si",
+  "license": "Apache-2.0",
+  "keywords": ["human-in-the-loop", "forms", "approvals", "receipts", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Sess",
+        "shortDescription": "Ask a person, get the answer",
+        "longDescription": "Let your agent ask a person and continue with their answer. People answer through a link on any device. Sess returns their response with a signed receipt. Sess lets your agent ask a person and continue with their answer. The agent describes a short form and gets a Sess link at once. The person opens it on any device and answers. The agent accepts the typed answer only after checking its signed Sess receipt, then shows a next step on the same link or finishes.\n\nAnyone who has the link can answer, so share it only with the person you mean. A receipt confirms the record of what was shown and chosen, not who answered. Treat answers as untrusted input and check them before acting. Needs a Sess account.",
+        "developerName": "Sess",
+        "category": "Productivity",
+        "capabilities": [
+          "Ask a person through Sess",
+          "Read the person’s Sess answer",
+          "Show the next Sess step",
+          "Finish the Sess interaction",
+          "Ask a short question through Sess"
+        ],
+        "websiteURL": "https://sess.si",
+        "supportURL": "https://docs.sess.si/support/",
+        "privacyPolicyURL": "https://sess.si/privacy/",
+        "termsOfServiceURL": "https://sess.si/terms/",
+        "defaultPrompt": [
+          "Use Sess to ask me on my phone which time works for a call tomorrow, then tell me what I chose.",
+          "Use Sess to ask me to approve the report before you send it, then tell me what I chose.",
+          "Use Sess to ask me three quick questions to plan my weekend, then tell me what I chose."
+        ],
+        "composerIcon": "./assets/icon-192.png",
+        "logo": "./assets/icon-512.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Ask a short question and read the answer",
+              "prompt": "Use Sess to ask me on my phone which time works for a call tomorrow, then tell me what I chose.",
+              "tools_triggered": "sess_ask, sess_response",
+              "expected_behavior": "Shares a Sess link at once. After the reviewer submits the form, reports the chosen time."
+            },
+            {
+              "description": "Ask for an approval before acting",
+              "prompt": "Ask me through Sess to approve the title 'Q3 plan' before you write the summary.",
+              "tools_triggered": "sess_request, sess_response",
+              "expected_behavior": "Shows the title with approve and reject buttons, shares the link and reports the choice after it is submitted."
+            },
+            {
+              "description": "Show a second step on the same link",
+              "prompt": "Ask me through Sess which city I am visiting, then which day I arrive.",
+              "tools_triggered": "sess_ask, sess_response, sess_publish",
+              "expected_behavior": "After the first answer, the same link shows the second question; reports both answers."
+            },
+            {
+              "description": "Finish after the answer",
+              "prompt": "Ask me through Sess to confirm the meeting time, then close the form.",
+              "tools_triggered": "sess_ask, sess_response, sess_complete",
+              "expected_behavior": "Reports the confirmed time, then says the form is closed."
+            },
+            {
+              "description": "Not answered yet",
+              "prompt": "Ask me through Sess for my lunch choice.",
+              "tools_triggered": "sess_ask, sess_response",
+              "expected_behavior": "Says the form is still open and to ask again after submitting; does not create a second form. After the reviewer submits and asks again, reports the choice."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Only the person answers: the agent must not fill in or submit the person's form itself.",
+              "prompt": "Fill in the form for me and submit it yourself.",
+              "expected_behavior": "Does not submit an answer. Says that only the person who opens the Sess link can answer, and offers to share the link."
+            },
+            {
+              "description": "No person is needed: the agent can answer on its own, so it should not ask through Sess.",
+              "prompt": "What is 12 times 12?",
+              "expected_behavior": "Answers 144 directly and calls no Sess tool."
+            },
+            {
+              "description": "Out of scope: Sess asks a person and returns their answer; it cannot send money.",
+              "prompt": "Send 50 dollars to my friend.",
+              "expected_behavior": "Calls no Sess tool and says it cannot send money with Sess."
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "release_notes": "First release: ask a person through a Sess link and continue with their receipt-checked answer."
+      }
+    }
+  }
+}
