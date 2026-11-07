@@ -6,7 +6,9 @@ Anyone with the link can answer, so share it only with the person you mean. The 
 
 ## Connect
 
-- Server URL: `https://mcp.sess.si/mcp` (Streamable HTTP)
+
+- Server URL: `https://mcp.sess.si/mcp` (Streamable HTTP).
+
 - Setup for each agent host: https://docs.sess.si/add-to-your-agent/
 
 ## Tools
